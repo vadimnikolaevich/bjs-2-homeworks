@@ -1,52 +1,94 @@
-// Задача 1
+// Задача №1. Форматтер чисел
 
-function parseCount(products) {
-  if (Number.isNaN(Number.parseFloat(products))) {
-    throw new Error(`Невалидное значение`);
+function parseCount(element) {
+  const parsed = parseInt(element);
+  if (isNaN(parsed)) {
+    throw new Error("Невалидное значение");
   }
-  return Number.parseFloat(products);
+  return parsed;
 }
+console.log(parseCount('5', 10))
 
-function validateCount(products) {
-  try {
-    parseCount(products);
+function validateCount(element) {
+  try{
+    return parseCount(element);
   } catch(error) {
-    console.error(`Невалидное значение`);
+    return error;
   }
-  return parseCount(products);
 }
 
-// Задача 2
+// Задача №2. Треугольник
 
 class Triangle {
-  #perimeter;
-  #area;
-  constructor(sideOne, sideTwo, sideThree) {
-    if ( (sideOne + sideTwo) < sideThree || (sideTwo + sideThree) < sideOne || (sideOne + sideThree) < sideTwo) {
-      throw new Error(`Треугольник с такими сторонами не существует`);
-    }
-    this.sideOne = sideOne;
-    this.sideTwo = sideTwo;
-    this.sideThree = sideThree;
-    this.#perimeter;
-    this.#area;
+  constructor(side1, side2, side3) {
+    this.side1 = side1;
+    this.side2 = side2;
+    this.side3 = side3;
+      if ((side1 + side2) < side3 || (side1 + side3) < side2 || (side2 + side3) < side1) {
+          throw new Error("Треугольник с такими сторонами не существует");
+      }
   }
-  get perimeter() {
-    return +(this.sideOne + this.sideTwo + this.sideThree);
+  getPerimeter() {
+    return (this.side1 + this.side2 + this.side3);
   }
-  get area() {
-    let p = this.perimeter / 2;
-    return +( Math.sqrt(p * (p - this.sideOne) * (p - this.sideTwo) * (p - this.sideThree)) ).toFixed(3);
+  getArea() {
+    let halfPerimeter = this.getPerimeter()/2;
+    return (Number(Math.sqrt((halfPerimeter)*(halfPerimeter - this.side1)*(halfPerimeter - this.side2)*(halfPerimeter - this.side3)).toFixed(3)));
   }
 }
 
-function getTriangle(sideOne, sideTwo, sideThree) {
-  try {
-    return new Triangle(sideOne, sideTwo, sideThree);
-  } catch(error) {
-    return {
-      perimeter: `Ошибка! Треугольник не существует`,
-      area: `Ошибка! Треугольник не существует`,
+
+let triangle = new Triangle(1, 2, 3);
+console.log(triangle)
+
+function getTriangle(side1, side2, side3){
+    try {
+      return new Triangle(side1, side2, side3);
+    } catch {
+        let exception = {};
+        exception.getArea = () => {
+          return "Ошибка! Треугольник не существует";
+        }
+        exception.getPerimeter = () => {
+          return "Ошибка! Треугольник не существует";
+        }
+        return exception;
     }
+}
+
+/*
+Задача №2. Треугольник
+class Triangle {
+  constructor(side1, side2, side3) {
+      if ((side1 + side2) < side3 || (side1 + side3) < side2 || (side2 + side3) < side1) {
+          throw new Error("Треугольник с такими сторонами не существует");
+      }
+      this.side1 = side1;
+      this.side2 = side2;
+      this.side3 = side3;
+  }
+  getPerimeter() {
+    return (this.side1 + this.side2 + this.side3);
+  }
+  getArea() {
+    let halfPerimeter = this.getPerimeter/2;
+    return (Number(Math.sqrt((halfPerimeter)*(halfPerimeter - this.side1)*(halfPerimeter - this.side2)*(halfPerimeter - this.side3)).toFixed(2)));
   }
 }
+let triangle = new Triangle(1, 2, 3);
+console.log(triangle)
+function getTriangle(side1, side2, side3){
+    try {
+      return new Triangle(side1, side2, side3);
+    } catch {
+        let exception = {};
+        exception.getArea = () => {
+          return "Ошибка! Треугольник не существует";
+        }
+        exception.getPerimeter = () => {
+          return "Ошибка! Треугольник не существует";
+        }
+        return exception;
+    }
+}
+*/
