@@ -1,64 +1,62 @@
 //Задача № 1
-"use strict";
-let a;
-let b;
-let c;
-function solveEquation(a, b, c) {
-  let arr = [];
-  a = 1;
-  b = 1;
-  c = 1;
-  let discriminant = b * b - 4 * a * c;
-  console.log(discriminant);
-  if (discriminant < 0) {
-    console.log(arr);
-  }  else if (discriminant == 0) {
-    let squareRoot = -b / (2 * a);
-    arr.push(squareRoot);
-    console.log(arr);
-  }  else if (discriminant > 0) {
-    let squareRoot1 = (-b + Math.sqrt(discriminant)) / (2 * a);
-    let squareRoot2 = (-b - Math.sqrt(discriminant)) / (2 * a);
-    arr.push(squareRoot1);
-    arr.push(squareRoot2);   
-    console.log(arr);
+
+function cachingDecoratorNew(func) {
+    const cache = [];
+  
+    return function(...args) {
+      const hash = md5(JSON.stringify(args));
+      const entry = cache.find(entry => entry.hash === hash);
+  
+      if (entry) {
+          return `Из кэша: ${entry.value}`;
+      } else {
+          const result = func.apply(this, args);
+          cache.push({hash: hash, value: result});
+          console.log(cache)
+  
+          if (cache.length > 5) {
+            cache.shift();
+            console.log(cache)
+          }
+  
+          return `Вычисляем: ${result}`;
+      };
+    };
+  };
+  
+  //Задача № 2
+  
+  function debounceDecoratorNew(fn) {
+    let count = 0;
+    const statistics = { callCount: 0 };
+  
+    function decorated(...args) {
+      const isFirstCall = count === 0;
+      count++;
+  
+      if (isFirstCall) {
+        const result = fn(...args);
+        if (result instanceof Promise) {
+          return result.then((val) => {
+            setTimeout(() => {
+              console.log("Асинхронный вызов завершен", val);
+            }, 0);
+            return val;
+          });
+        } else {
+          return result;
+        }
+      } else {
+        statistics.callCount++;
+      }
+    }
+  
+    decorated.getStatistics = () => statistics;
+    decorated.resetStatistics = () => {
+      count = 0;
+      statistics.callCount = 0;
+    };
+  
+    return decorated;
   }
-  return arr;
-}
-  solveEquation(a, b, c);
-
-
-
-//Задача № 2
-
-let percent = 10;
-let contribution = 0;
-let amount = 50000;
-let countMonths = 12;
-
-function calculateTotalMortgage(percent, contribution, amount, countMonths) {  
-  if (isNaN(percent) || isNaN(contribution) || isNaN(amount) || isNaN(countMonths)) {
-    let theEnd = "Неверно введено значение. Проверьте данные!"; 
-    console.log(theEnd);
-  }  else {
-    let contiNue = "Посчитаем.";  
-    console.log(contiNue);
-  }
-
-  let percentPerMonth = percent / 100 / 12;
-  console.log(percentPerMonth);
-  let amountBody = amount - contribution;
-  let root = Math.pow((1 + percentPerMonth), countMonths);
-  console.log(root);
-  let paymentPerMonth = amountBody * (percentPerMonth + (percentPerMonth / (root - 1)));
-  console.log(paymentPerMonth);   
-  let summAll = paymentPerMonth * countMonths;
-  console.log(summAll);
-  console.log(summAll.toFixed(2));
-  if (isNaN(summAll)) {
-    console.log("Проверьте корректность введенных данных!");
-  }  else {
-  return summAll;
-  }
-}
-calculateTotalMortgage(percent, contribution, amount, countMonths);
+  
